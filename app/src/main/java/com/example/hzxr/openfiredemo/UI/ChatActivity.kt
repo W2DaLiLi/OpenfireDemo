@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.widget.Button
 import android.widget.EditText
 import com.example.hzxr.openfiredemo.R
+import com.example.hzxr.openfiredemo.UI.Adapter.MessageRecyclerViewAdapter
 
 /**
  * Created by Hzxr on 2018/1/8.
@@ -15,6 +16,7 @@ class ChatActivity: AppCompatActivity() {
     private lateinit var sendBt: Button
     private lateinit var messageListRv: RecyclerView
     private lateinit var editMessageEt: EditText
+    private lateinit var adapter: MessageRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

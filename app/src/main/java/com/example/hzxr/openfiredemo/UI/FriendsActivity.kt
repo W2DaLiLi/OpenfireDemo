@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.example.hzxr.openfiredemo.R
+import com.example.hzxr.openfiredemo.UI.Adapter.FriendsRecyclerAdapter
 import com.example.hzxr.openfiredemo.net.XmppConnection
 import org.jivesoftware.smack.XMPPException
 

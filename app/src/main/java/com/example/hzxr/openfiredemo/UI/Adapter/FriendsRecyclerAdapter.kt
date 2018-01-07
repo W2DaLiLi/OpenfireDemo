@@ -1,15 +1,12 @@
-package com.example.hzxr.openfiredemo.UI
+package com.example.hzxr.openfiredemo.UI.Adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.hzxr.openfiredemo.R
-import com.example.hzxr.openfiredemo.net.XmppConnection
-import org.jivesoftware.smack.XMPPException
 
 
 /**
