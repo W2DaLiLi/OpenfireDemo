@@ -17,8 +17,13 @@ import org.jivesoftware.smack.XMPPException
  */
 class FriendsRecyclerAdapter(private val context: Context, private val friendList: ArrayList<HashMap<String, String>>) : RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder>() {
 
+    var onItemClickListener: ((position: Int) -> Unit)? = null
+
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
         holder.bind(friendList[position].get("Name") ?: return)
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.invoke(position)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): FriendViewHolder {

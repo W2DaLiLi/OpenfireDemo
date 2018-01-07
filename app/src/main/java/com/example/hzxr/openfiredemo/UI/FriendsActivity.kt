@@ -26,6 +26,10 @@ class FriendsActivity: AppCompatActivity() {
         adapter = FriendsRecyclerAdapter(this, friendList)
         friendListRv.adapter = adapter
         loadFriendsData()
+
+        adapter.onItemClickListener = { position ->
+            Log.d("TAG", position.toString())
+        }
     }
 
     private fun loadFriendsData() {
