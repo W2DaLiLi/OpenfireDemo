@@ -3,9 +3,9 @@
 DONE:
 - Login/register
 - AddFriend/showFriend
+- Chat£¨pvp£©
 
 TODO:
-- Chat(pvp)
 - Chat(group)
 - upload(file)
 
