@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.hzxr.openfiredemo.R
+import com.example.hzxr.openfiredemo.UserHelper
 import com.example.hzxr.openfiredemo.net.XmppConnection
 import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smack.packet.Presence
@@ -78,6 +79,7 @@ class LoginActivity: AppCompatActivity() {
                 Toast.makeText(this@LoginActivity, "登陆成功", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 intent.putExtra("name", username.text.toString())
+                UserHelper.userName = username.text.toString()
                 startActivity(intent)
             } else if (msg.what == 2) {
                 Toast.makeText(this@LoginActivity, "登陆失败", Toast.LENGTH_SHORT).show()

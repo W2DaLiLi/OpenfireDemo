@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import com.example.hzxr.openfiredemo.R
 import com.example.hzxr.openfiredemo.UI.Adapter.MessageRecyclerViewAdapter
+import com.example.hzxr.openfiredemo.UserHelper
+import com.example.hzxr.openfiredemo.model.Msg
 import com.example.hzxr.openfiredemo.net.XmppConnection
 import org.jivesoftware.smack.ChatManager
 import org.jivesoftware.smack.XMPPConnection
@@ -23,6 +25,7 @@ class ChatActivity: AppCompatActivity() {
     private lateinit var messageListRv: RecyclerView
     private lateinit var editMessageEt: EditText
     private lateinit var adapter: MessageRecyclerViewAdapter
+    private val msgList: ArrayList<Msg> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +34,7 @@ class ChatActivity: AppCompatActivity() {
         initView()
 
         val outingUser = intent.getStringExtra("User")
-        comingMessageListener()//好友消息监听
+        comingMessageListener(outingUser)//好友消息监听
         sendBt.setOnClickListener {
             sendMessage(outingUser)
         }
@@ -43,12 +46,15 @@ class ChatActivity: AppCompatActivity() {
         editMessageEt = findViewById(R.id.edit_message)
     }
 
-    private fun comingMessageListener(){
+    private fun comingMessageListener(outingUser: String){
         val chatManager = XmppConnection.getConnection()?.chatManager?: return
         chatManager.addChatListener { chat, _ ->
             chat.addMessageListener { _, message ->
                 if (message.body != null)
                 Log.d("TAG", "body:" + message.body + "languages:"+ message.bodyLanguages)
+                val msg = Msg(message.body, outingUser,"COME")
+                msgList.add(msg)
+                Log.d("TAG", msgList.toString())
             }
         }
     }
@@ -61,6 +67,10 @@ class ChatActivity: AppCompatActivity() {
                 val msg = Message()
                 msg.body = "Hello" + user
                 newChat.sendMessage(msg)
+                val name = UserHelper.userName?: return@Thread
+                val outmsg = Msg(msg.body, name, "OUT")
+                msgList.add(outmsg)
+                Log.d("TAG", msgList.toString())
             }catch (e: XMPPException){
                 e.printStackTrace()
             }
