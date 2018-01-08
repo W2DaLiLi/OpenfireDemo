@@ -1,7 +1,10 @@
 package com.example.hzxr.openfiredemo.UI
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.Button
@@ -44,6 +47,10 @@ class ChatActivity: AppCompatActivity() {
         sendBt = findViewById(R.id.send_message)
         messageListRv = findViewById(R.id.message_list)
         editMessageEt = findViewById(R.id.edit_message)
+
+        adapter = MessageRecyclerViewAdapter(this, msgList)
+        messageListRv.layoutManager = LinearLayoutManager(this)
+        messageListRv.adapter = adapter
     }
 
     private fun comingMessageListener(outingUser: String){
@@ -55,6 +62,7 @@ class ChatActivity: AppCompatActivity() {
                 val msg = Msg(message.body, outingUser,"COME")
                 msgList.add(msg)
                 Log.d("TAG", msgList.toString())
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -63,17 +71,27 @@ class ChatActivity: AppCompatActivity() {
         Thread({
             val chatManager = XmppConnection.getConnection()?.chatManager?: return@Thread
             val newChat = chatManager.createChat(user, null)
+            val content = editMessageEt.text.toString()
             try {
                 val msg = Message()
-                msg.body = "Hello" + user
+                msg.body = content
                 newChat.sendMessage(msg)
                 val name = UserHelper.userName?: return@Thread
-                val outmsg = Msg(msg.body, name, "OUT")
+                val outmsg = Msg(content, name, "OUT")
                 msgList.add(outmsg)
                 Log.d("TAG", msgList.toString())
+                handler.sendEmptyMessage(1)
             }catch (e: XMPPException){
                 e.printStackTrace()
             }
         }).start()
+    }
+
+    @SuppressLint("HandlerLeak")
+    private val handler = object : Handler(){
+        override fun handleMessage(msg: android.os.Message?) {
+            if (msg?.what == 1)
+                adapter.notifyDataSetChanged()
+        }
     }
 }
