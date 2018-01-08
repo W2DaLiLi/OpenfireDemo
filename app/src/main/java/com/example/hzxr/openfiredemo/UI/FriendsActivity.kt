@@ -1,5 +1,6 @@
 package com.example.hzxr.openfiredemo.UI
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -30,6 +31,9 @@ class FriendsActivity: AppCompatActivity() {
 
         adapter.onItemClickListener = { position ->
             Log.d("TAG", position.toString())
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("User", friendList[position].get("User"))
+            startActivity(intent)
         }
     }
 
