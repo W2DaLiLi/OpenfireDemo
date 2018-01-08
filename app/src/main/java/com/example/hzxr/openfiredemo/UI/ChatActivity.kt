@@ -90,8 +90,11 @@ class ChatActivity: AppCompatActivity() {
     @SuppressLint("HandlerLeak")
     private val handler = object : Handler(){
         override fun handleMessage(msg: android.os.Message?) {
-            if (msg?.what == 1)
+            if (msg?.what == 1){
                 adapter.notifyDataSetChanged()
+                messageListRv.scrollToPosition(adapter.itemCount - 1)
+                editMessageEt.text = null
+            }
         }
     }
 }
