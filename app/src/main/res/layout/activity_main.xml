@@ -6,24 +6,23 @@
     android:layout_height="match_parent"
     tools:context="com.example.hzxr.openfiredemo.UI.MainActivity">
 
+    <include
+        android:id="@+id/include5"
+        layout="@layout/layout_toolbar" />
+
     <Button
         android:id="@+id/addFriend_Bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="添加好友"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/include5" />
 
     <Button
         android:id="@+id/getfriendList_Bt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="获取好友列表"
         app:layout_constraintEnd_toEndOf="parent"
