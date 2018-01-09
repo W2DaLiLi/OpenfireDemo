@@ -11,6 +11,7 @@ import android.os.Message
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import com.example.hzxr.openfiredemo.R
 import com.example.hzxr.openfiredemo.net.XmppConnection
 import com.example.hzxr.openfiredemo.util.ToastUtil
@@ -23,6 +24,7 @@ class MainActivity : BaseActivity() {
 
     private lateinit var addFriendBt: Button
     private lateinit var getFriendListBt: Button
+    private lateinit var title: TextView
     private var name: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,8 @@ class MainActivity : BaseActivity() {
 
         addFriendBt = findViewById(R.id.addFriend_Bt)
         getFriendListBt = findViewById(R.id.getfriendList_Bt)
+        title = findViewById(R.id.title_tv)
+        title.text = "主界面"
 
         name = intent.getStringExtra("name")
         addSubscriptionListener()

@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.example.hzxr.openfiredemo.R
 import com.example.hzxr.openfiredemo.UserHelper
@@ -23,6 +24,7 @@ class LoginActivity: BaseActivity() {
     private lateinit var password: EditText
     private lateinit var loginBt: Button
     private lateinit var registerBt: Button
+    private lateinit var title: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,9 @@ class LoginActivity: BaseActivity() {
         password = findViewById(R.id.password_Et)
         loginBt = findViewById(R.id.login_Bt)
         registerBt = findViewById(R.id.register_Bt)
+        title = findViewById(R.id.title_tv)
+
+        title.text = "登陆"
 
         loginBt.setOnClickListener {
             onLogin()

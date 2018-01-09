@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.TextView
 import com.example.hzxr.openfiredemo.R
 import com.example.hzxr.openfiredemo.UI.Adapter.FriendsRecyclerAdapter
 import com.example.hzxr.openfiredemo.net.XmppConnection
@@ -18,11 +19,14 @@ class FriendsActivity: BaseActivity() {
 
     private lateinit var friendListRv: RecyclerView
     private lateinit var adapter: FriendsRecyclerAdapter
+    private lateinit var title: TextView
     private val friendList: ArrayList<HashMap<String, String>> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_friends)
+        title = findViewById(R.id.title_tv)
+        title.text = "好友列表"
         friendListRv = findViewById(R.id.friend_list_rv)
         friendListRv.layoutManager = LinearLayoutManager(this)
         adapter = FriendsRecyclerAdapter(this, friendList)

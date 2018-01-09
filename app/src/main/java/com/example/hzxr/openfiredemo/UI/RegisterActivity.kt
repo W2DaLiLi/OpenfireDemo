@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.example.hzxr.openfiredemo.R
 import com.example.hzxr.openfiredemo.net.XmppConnection
@@ -31,6 +32,7 @@ class RegisterActivity : BaseActivity() {
     private lateinit var usernameEt: EditText
     private lateinit var passwordEt: EditText
     private lateinit var registerBt: Button
+    private lateinit var title: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,8 @@ class RegisterActivity : BaseActivity() {
         usernameEt = findViewById(R.id.username_Et)
         passwordEt = findViewById(R.id.password_Et)
         registerBt = findViewById(R.id.register_Bt)
+        title = findViewById(R.id.title_tv)
+        title.text = "注册界面"
     }
 
     private fun register() {

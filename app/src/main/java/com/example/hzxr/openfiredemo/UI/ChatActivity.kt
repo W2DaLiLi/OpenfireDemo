@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.example.hzxr.openfiredemo.R
 import com.example.hzxr.openfiredemo.UI.Adapter.MessageRecyclerViewAdapter
 import com.example.hzxr.openfiredemo.UserHelper
@@ -28,25 +29,28 @@ class ChatActivity: BaseActivity() {
     private lateinit var messageListRv: RecyclerView
     private lateinit var editMessageEt: EditText
     private lateinit var adapter: MessageRecyclerViewAdapter
+    private lateinit var title: TextView
     private val msgList: ArrayList<Msg> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        initView()
-
         val outingUser = intent.getStringExtra("User")
+
+        initView(outingUser)
         comingMessageListener(outingUser)//好友消息监听
         sendBt.setOnClickListener {
             sendMessage(outingUser)
         }
     }
 
-    private fun initView(){
+    private fun initView(outingUser: String){
         sendBt = findViewById(R.id.send_message)
         messageListRv = findViewById(R.id.message_list)
         editMessageEt = findViewById(R.id.edit_message)
+        title = findViewById(R.id.title_tv)
+        title.text = outingUser
 
         adapter = MessageRecyclerViewAdapter(this, msgList)
         messageListRv.layoutManager = LinearLayoutManager(this)
