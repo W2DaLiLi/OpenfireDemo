@@ -14,7 +14,7 @@ import org.jivesoftware.smack.XMPPException
 /**
  * Created by Hzxr on 2018/1/7.
  */
-class FriendsActivity: AppCompatActivity() {
+class FriendsActivity: BaseActivity() {
 
     private lateinit var friendListRv: RecyclerView
     private lateinit var adapter: FriendsRecyclerAdapter

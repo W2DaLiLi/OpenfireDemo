@@ -25,7 +25,7 @@ import org.jivesoftware.smack.packet.Registration
 /**
  * Created by Hzxr on 2018/1/6.
  */
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
 
     private lateinit var emailEt: EditText
     private lateinit var usernameEt: EditText

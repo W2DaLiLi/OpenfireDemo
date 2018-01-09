@@ -18,7 +18,7 @@ import org.jivesoftware.smack.packet.Presence
 /**
  * Created by Hzxr on 2018/1/6.
  */
-class LoginActivity: AppCompatActivity() {
+class LoginActivity: BaseActivity() {
 
     private lateinit var username: EditText
     private lateinit var password: EditText

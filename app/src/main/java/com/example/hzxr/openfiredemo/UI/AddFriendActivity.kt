@@ -19,7 +19,7 @@ import org.jivesoftware.smack.packet.Presence
 /**
  * Created by Hzxr on 2018/1/6.
  */
-class AddFriendActivity : AppCompatActivity() {
+class AddFriendActivity : BaseActivity() {
 
     private lateinit var friendNameEt: EditText
     private lateinit var submitBt: Button

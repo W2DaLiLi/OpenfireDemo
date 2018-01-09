@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.Message
 /**
  * Created by Hzxr on 2018/1/8.
  */
-class ChatActivity: AppCompatActivity() {
+class ChatActivity: BaseActivity() {
 
     private lateinit var sendBt: Button
     private lateinit var messageListRv: RecyclerView

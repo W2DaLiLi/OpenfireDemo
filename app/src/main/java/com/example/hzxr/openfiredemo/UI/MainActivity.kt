@@ -19,7 +19,7 @@ import org.jivesoftware.smack.filter.PacketFilter
 import org.jivesoftware.smack.packet.Packet
 import org.jivesoftware.smack.packet.Presence
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var addFriendBt: Button
     private lateinit var getFriendListBt: Button
