@@ -1,11 +1,14 @@
 package com.example.hzxr.openfiredemo.UI
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
@@ -30,6 +33,7 @@ class ChatActivity: BaseActivity() {
     private lateinit var editMessageEt: EditText
     private lateinit var adapter: MessageRecyclerViewAdapter
     private lateinit var title: TextView
+    private lateinit var picSendBt: Button
     private val msgList: ArrayList<Msg> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +47,13 @@ class ChatActivity: BaseActivity() {
         sendBt.setOnClickListener {
             sendMessage(outingUser)
         }
+
+        picSendBt.setOnClickListener { openPictures() }
     }
 
     private fun initView(outingUser: String){
         sendBt = findViewById(R.id.send_message)
+        picSendBt = findViewById(R.id.send_picture)
         messageListRv = findViewById(R.id.message_list)
         editMessageEt = findViewById(R.id.edit_message)
         title = findViewById(R.id.title_tv)
@@ -100,5 +107,29 @@ class ChatActivity: BaseActivity() {
                 editMessageEt.text = null
             }
         }
+    }
+
+    private fun openPictures(){
+        val intent = Intent()
+        intent.setType("image/*")
+        intent.setAction(Intent.ACTION_GET_CONTENT)
+        startActivityForResult(intent, PICTURE_RESULT)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("TAG", "come back from pic activity")
+        if (requestCode == PICTURE_RESULT && data != null){
+            Log.d("TAG","data is not null")
+            val uri = data.data
+            if (!TextUtils.isEmpty(uri.authority)){
+                Log.d("TAG", uri.toString())
+                //TODO：解析文件路径
+            }
+        }
+    }
+
+    companion object {
+        val PICTURE_RESULT = 0x33
     }
 }
