@@ -2,6 +2,7 @@ package com.example.hzxr.openfiredemo.UI
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
@@ -22,6 +23,8 @@ import org.jivesoftware.smack.ChatManager
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smack.packet.Message
+import org.jivesoftware.smackx.filetransfer.FileTransfer
+import java.io.File
 
 /**
  * Created by Hzxr on 2018/1/8.
@@ -114,6 +117,41 @@ class ChatActivity: BaseActivity() {
         intent.setType("image/*")
         intent.setAction(Intent.ACTION_GET_CONTENT)
         startActivityForResult(intent, PICTURE_RESULT)
+    }
+
+    class SendFileTask: AsyncTask<String, String, Int>(){
+        override fun doInBackground(vararg p0: String?): Int {
+            if (p0.size < 0) return -1
+            val file_path = p0[0]
+            val toId = p0[1] + "/Smack"
+            val fileTransferManager = XmppConnection.getFileTransferManager() ?: return -1
+            val file = File(file_path)
+            Log.d("TAG", "the file " + file.toString())
+            if (file.exists().equals(false)) return -1
+            val outgoingFileTransfer = fileTransferManager.createOutgoingFileTransfer(toId)
+            try {
+                outgoingFileTransfer.sendFile(file, "recv img")
+                while (!outgoingFileTransfer.isDone) {
+                    if (outgoingFileTransfer.status.equals(FileTransfer.Status.error))
+                        Log.d("TAG", "ERROR : " + outgoingFileTransfer.error)
+                    else {
+                        Log.d("TAG", outgoingFileTransfer.status.toString())
+                        Log.d("TAG", outgoingFileTransfer.progress.toString())
+                    }
+                    try {
+                        Thread.sleep(1000)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                }
+                if (outgoingFileTransfer.isDone) {
+
+                }
+            } catch (e: XMPPException) {
+                e.printStackTrace()
+            }
+            return 0
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
