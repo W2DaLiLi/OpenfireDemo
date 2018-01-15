@@ -29,7 +29,7 @@ import java.io.File
 /**
  * Created by Hzxr on 2018/1/8.
  */
-class ChatActivity: BaseActivity() {
+class ChatActivity : BaseActivity() {
 
     private lateinit var sendBt: Button
     private lateinit var messageListRv: RecyclerView
@@ -44,6 +44,7 @@ class ChatActivity: BaseActivity() {
         setContentView(R.layout.activity_chat)
 
         val outingUser = intent.getStringExtra("User")
+        UserHelper.toUserId = outingUser//这是目前最糟糕的方法去拿这个ID，有待优化，一个数据尽量只在一个方法或者类里面进行操作明儿不要传到外面去设置
 
         initView(outingUser)
         comingMessageListener(outingUser)//好友消息监听
@@ -54,7 +55,7 @@ class ChatActivity: BaseActivity() {
         picSendBt.setOnClickListener { openPictures() }
     }
 
-    private fun initView(outingUser: String){
+    private fun initView(outingUser: String) {
         sendBt = findViewById(R.id.send_message)
         picSendBt = findViewById(R.id.send_picture)
         messageListRv = findViewById(R.id.message_list)
@@ -67,13 +68,13 @@ class ChatActivity: BaseActivity() {
         messageListRv.adapter = adapter
     }
 
-    private fun comingMessageListener(outingUser: String){
-        val chatManager = XmppConnection.getConnection()?.chatManager?: return
+    private fun comingMessageListener(outingUser: String) {
+        val chatManager = XmppConnection.getConnection()?.chatManager ?: return
         chatManager.addChatListener { chat, _ ->
             chat.addMessageListener { _, message ->
                 if (message.body != null)
-                Log.d("TAG", "body:" + message.body + "languages:"+ message.bodyLanguages)
-                val msg = Msg(message.body, outingUser,"COME")
+                    Log.d("TAG", "body:" + message.body + "languages:" + message.bodyLanguages)
+                val msg = Msg(message.body, outingUser, "COME")
                 msgList.add(msg)
                 Log.d("TAG", msgList.toString())
                 adapter.notifyDataSetChanged()
@@ -81,45 +82,48 @@ class ChatActivity: BaseActivity() {
         }
     }
 
-    private fun sendMessage(user: String){
+    private fun sendMessage(user: String) {
         Thread({
-            val chatManager = XmppConnection.getConnection()?.chatManager?: return@Thread
+            val chatManager = XmppConnection.getConnection()?.chatManager ?: return@Thread
             val newChat = chatManager.createChat(user, null)
             val content = editMessageEt.text.toString()
             try {
                 val msg = Message()
                 msg.body = content
                 newChat.sendMessage(msg)
-                val name = UserHelper.userName?: return@Thread
+                val name = UserHelper.userName ?: return@Thread
                 val outmsg = Msg(content, name, "OUT")
                 msgList.add(outmsg)
                 Log.d("TAG", msgList.toString())
                 handler.sendEmptyMessage(1)
-            }catch (e: XMPPException){
+            } catch (e: XMPPException) {
                 e.printStackTrace()
             }
         }).start()
     }
 
     @SuppressLint("HandlerLeak")
-    private val handler = object : Handler(){
+    private val handler = object : Handler() {
         override fun handleMessage(msg: android.os.Message?) {
-            if (msg?.what == 1){
+            if (msg?.what == 1) {
                 adapter.notifyDataSetChanged()
                 messageListRv.scrollToPosition(adapter.itemCount - 1)
                 editMessageEt.text = null
             }
+            if (msg?.what == 2) {
+                //todo:update the list
+            }
         }
     }
 
-    private fun openPictures(){
+    private fun openPictures() {
         val intent = Intent()
         intent.setType("image/*")
         intent.setAction(Intent.ACTION_GET_CONTENT)
         startActivityForResult(intent, PICTURE_RESULT)
     }
 
-    class SendFileTask: AsyncTask<String, String, Int>(){
+    inner class SendFileTask : AsyncTask<String, String, Int>() {
         override fun doInBackground(vararg p0: String?): Int {
             if (p0.size < 0) return -1
             val file_path = p0[0]
@@ -145,7 +149,10 @@ class ChatActivity: BaseActivity() {
                     }
                 }
                 if (outgoingFileTransfer.isDone) {
-
+                    val message = handler.obtainMessage()
+                    message.what = 2
+                    message.obj = file_path
+                    message.sendToTarget()
                 }
             } catch (e: XMPPException) {
                 e.printStackTrace()
@@ -157,12 +164,13 @@ class ChatActivity: BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("TAG", "come back from pic activity")
-        if (requestCode == PICTURE_RESULT && data != null){
-            Log.d("TAG","data is not null")
+        if (requestCode == PICTURE_RESULT && data != null) {
+            Log.d("TAG", "data is not null")
             val uri = data.data
-            if (!TextUtils.isEmpty(uri.authority)){
+            if (!TextUtils.isEmpty(uri.authority)) {
                 Log.d("TAG", uri.toString())
                 //TODO：解析文件路径,根据版本获取绝对路径和相对路径
+                SendFileTask().execute(uri.toString(), UserHelper.toUserId ?: return)
             }
         }
     }

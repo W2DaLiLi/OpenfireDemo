@@ -6,4 +6,8 @@ package com.example.hzxr.openfiredemo
 object UserHelper {
 
     var userName: String? = null
+    var toUserId: String? = null
+
+    val toUserName
+    get() = toUserId?.substring(0, toUserId?.indexOf("@")!!)
 }
