@@ -124,7 +124,7 @@ class ChatActivity: BaseActivity() {
             val uri = data.data
             if (!TextUtils.isEmpty(uri.authority)){
                 Log.d("TAG", uri.toString())
-                //TODO：解析文件路径
+                //TODO：解析文件路径,根据版本获取绝对路径和相对路径
             }
         }
     }

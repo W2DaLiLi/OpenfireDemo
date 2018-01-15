@@ -63,7 +63,7 @@ class LoginActivity: BaseActivity() {
             } catch (e: XMPPException) {
                 Log.d("TAG",e.message)
                 Log.d("TAG",e.xmppError.toString())
-                XmppConnection.closeConnecttion()
+                XmppConnection.closeConnection()
                 handler.sendEmptyMessage(2)
             }
         })

@@ -51,9 +51,9 @@ object XmppConnection {
         configureConnection()
     }
 
-    fun closeConnecttion(){
+    fun closeConnection(){
         if (connection != null){
-            connection?.disconnect();
+            connection?.disconnect()
             connection = null
         }
     }
