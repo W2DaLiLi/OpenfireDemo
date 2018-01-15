@@ -27,7 +27,9 @@ import org.jivesoftware.smackx.provider.MessageEventProvider
 import org.jivesoftware.smackx.provider.RosterExchangeProvider
 import org.jivesoftware.smackx.PrivateDataManager
 import org.jivesoftware.smack.provider.ProviderManager
-
+import org.jivesoftware.smackx.ServiceDiscoveryManager
+import org.jivesoftware.smackx.filetransfer.FileTransferManager
+import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator
 
 
 /**
@@ -39,6 +41,7 @@ object XmppConnection {
     val SERVER_NAME = "localhost"//域
 
     private var connection: XMPPConnection? = null
+    private var fileManager: FileTransferManager? = null
 
     private fun openConnection(){
         XMPPConnection.DEBUG_ENABLED = true
@@ -62,6 +65,17 @@ object XmppConnection {
         if(connection == null)
             openConnection()
         return connection
+    }
+
+    fun getFileTransferManager(): FileTransferManager? {
+        if (fileManager == null){
+            val sdManager = ServiceDiscoveryManager.getInstanceFor(getConnection())
+            sdManager.addFeature("http://jabber.org/protocol/disco#info")
+            sdManager.addFeature("jabber:iq:privacy")
+            FileTransferNegotiator.setServiceEnabled(connection, true)
+            fileManager = FileTransferManager(connection)
+        }
+        return fileManager
     }
 
     private fun configureConnection() {
