@@ -1,7 +1,9 @@
 package com.example.hzxr.openfiredemo.UI
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -19,6 +21,7 @@ import com.example.hzxr.openfiredemo.UI.Adapter.MessageRecyclerViewAdapter
 import com.example.hzxr.openfiredemo.UserHelper
 import com.example.hzxr.openfiredemo.model.Msg
 import com.example.hzxr.openfiredemo.net.XmppConnection
+import com.example.hzxr.openfiredemo.util.ImageHelper
 import org.jivesoftware.smack.ChatManager
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.XMPPException
@@ -52,7 +55,9 @@ class ChatActivity : BaseActivity() {
             sendMessage(outingUser)
         }
 
-        picSendBt.setOnClickListener { openPictures() }
+        picSendBt.setOnClickListener {
+            checkAndRequestPermission()
+        }
     }
 
     private fun initView(outingUser: String) {
@@ -66,6 +71,25 @@ class ChatActivity : BaseActivity() {
         adapter = MessageRecyclerViewAdapter(this, msgList)
         messageListRv.layoutManager = LinearLayoutManager(this)
         messageListRv.adapter = adapter
+    }
+
+    private fun checkAndRequestPermission() {
+        if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 10)
+        } else {
+            openPictures()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            10 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openPictures()
+                }
+            }
+            else -> throw RuntimeException("permission denied")
+        }
     }
 
     private fun comingMessageListener(outingUser: String) {
@@ -130,20 +154,21 @@ class ChatActivity : BaseActivity() {
             val toId = p0[1] + "/Smack"
             val fileTransferManager = XmppConnection.getFileTransferManager() ?: return -1
             val file = File(file_path)
-            Log.d("TAG", "the file " + file.toString())
-            if (file.exists().equals(false)) return -1
+            Log.d("TAG", "the file " + file.exists() + "can read?:" + file.canRead())
+            if (file.exists().equals(false) || file.canRead().equals(false)) return -1
             val outgoingFileTransfer = fileTransferManager.createOutgoingFileTransfer(toId)
+            Log.d("TAG", "outgoingFileTransfer create ok")
             try {
                 outgoingFileTransfer.sendFile(file, "recv img")
                 while (!outgoingFileTransfer.isDone) {
                     if (outgoingFileTransfer.status.equals(FileTransfer.Status.error))
                         Log.d("TAG", "ERROR : " + outgoingFileTransfer.error)
                     else {
-                        Log.d("TAG", outgoingFileTransfer.status.toString())
-                        Log.d("TAG", outgoingFileTransfer.progress.toString())
+                        Log.d("TAG", "status" + outgoingFileTransfer.status.toString())
+                        Log.d("TAG", "progress" + outgoingFileTransfer.progress.toString())
                     }
                     try {
-                        Thread.sleep(1000)
+                        Thread.sleep(500)
                     } catch (e: InterruptedException) {
                         e.printStackTrace()
                     }
@@ -166,14 +191,24 @@ class ChatActivity : BaseActivity() {
         Log.d("TAG", "come back from pic activity")
         if (requestCode == PICTURE_RESULT && data != null) {
             Log.d("TAG", "data is not null")
-            val uri = data.data
-            if (!TextUtils.isEmpty(uri.authority)) {
-                Log.d("TAG", uri.toString())
-                //TODO：解析文件路径,根据版本获取绝对路径和相对路径
-                SendFileTask().execute(uri.toString(), UserHelper.toUserId ?: return)
-            }
+//            if (!TextUtils.isEmpty(uri.authority)) {
+//                Log.d("TAG", uri.toString())
+//                //TODO：解析文件路径,根据版本获取绝对路径和相对路径
+//                val proj = arrayOf(MediaStore.Images.Media.DATA)
+//                val cursor = contentResolver.query(uri, proj, null, null,null)
+//                if (cursor.moveToFirst()) {
+//                    val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+//                    path = cursor.getString(columnIndex)
+//                }
+//                cursor.close()
+//            } else {
+//                path = uri.path
+//            }
+            val path = ImageHelper.handlerImagePathOnkitKat(this, data)?: return
+            SendFileTask().execute(path, UserHelper.toUserId ?: return)
         }
     }
+
 
     companion object {
         val PICTURE_RESULT = 0x33
