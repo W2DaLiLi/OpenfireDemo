@@ -151,11 +151,12 @@ class ChatActivity : BaseActivity() {
         override fun doInBackground(vararg p0: String?): Int {
             if (p0.size < 0) return -1
             val file_path = p0[0]
-            val toId = p0[1] + "/Smack"
+            val toId = p0[1] + "/Spark"
             val fileTransferManager = XmppConnection.getFileTransferManager() ?: return -1
             val file = File(file_path)
             Log.d("TAG", "the file " + file.exists() + "can read?:" + file.canRead())
             if (file.exists().equals(false) || file.canRead().equals(false)) return -1
+            Log.d("TAG", "file send to " + toId)
             val outgoingFileTransfer = fileTransferManager.createOutgoingFileTransfer(toId)
             Log.d("TAG", "outgoingFileTransfer create ok")
             try {
@@ -191,19 +192,6 @@ class ChatActivity : BaseActivity() {
         Log.d("TAG", "come back from pic activity")
         if (requestCode == PICTURE_RESULT && data != null) {
             Log.d("TAG", "data is not null")
-//            if (!TextUtils.isEmpty(uri.authority)) {
-//                Log.d("TAG", uri.toString())
-//                //TODO：解析文件路径,根据版本获取绝对路径和相对路径
-//                val proj = arrayOf(MediaStore.Images.Media.DATA)
-//                val cursor = contentResolver.query(uri, proj, null, null,null)
-//                if (cursor.moveToFirst()) {
-//                    val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-//                    path = cursor.getString(columnIndex)
-//                }
-//                cursor.close()
-//            } else {
-//                path = uri.path
-//            }
             val path = ImageHelper.handlerImagePathOnkitKat(this, data)?: return
             SendFileTask().execute(path, UserHelper.toUserId ?: return)
         }
