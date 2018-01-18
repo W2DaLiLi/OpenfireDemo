@@ -96,12 +96,13 @@ class ChatActivity : BaseActivity() {
         val chatManager = XmppConnection.getConnection()?.chatManager ?: return
         chatManager.addChatListener { chat, _ ->
             chat.addMessageListener { _, message ->
-                if (message.body != null)
+                if (message.body != null && message.from.contains(outingUser)) {
                     Log.d("TAG", "body:" + message.body + "languages:" + message.bodyLanguages)
-                val msg = Msg(message.body, outingUser, "COME")
-                msgList.add(msg)
-                Log.d("TAG", msgList.toString())
-                adapter.notifyDataSetChanged()
+                    val msg = Msg(message.body, outingUser, "COME")
+                    msgList.add(msg)
+                    Log.d("TAG", msgList.toString())
+                    adapter.notifyDataSetChanged()
+                }
             }
         }
     }
